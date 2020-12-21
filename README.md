@@ -107,15 +107,168 @@ current = "_ " * length
 triesleft = 5
 ```
 Here, __chosen__ will be a store of all the letters we have chosen during the game, it will be initially empty.
+
 The __completed__ variable is an integer which will store the amount of letters in the word we have guessed. Note that this is based on the total amount of letters
 in the word and not our successfully chosen words, meaning that if the same letter occurs multiple times in the word, and we have chosen it, completed will go up by
 x number of times. *The gameloop will break when it reaches the length of the word.*
+
 The __Current__ variable is important for console output in the game. It is initially going to be some underscores for the total length of the word, but over time, 
 we will see some of the underscores to be replaced by letters.
+
 Lastly, the __triesleft__ variable simply stores our remaining goes, it is currently set to 5 and *the gameloop will break if it reaches 0*
+
+
+```python3
+while completed < length and triesleft > 0:
+    print("\n\n")
+    print("YOU HAVE",triesleft,"GOES REMAINING")
+    print("CHOOSE A LETTER!\n\n\n")
+    t.sleep(1)
+    print(current)
+    letter = input("-> ")
+    
+    while len(letter) > 1 or letter not in list(string.ascii_letters):
+        print("your string is not a letter or too long!")
+        letter = input("\n-> ")
+    letter = letter.upper()
+    
+    if letter in chosen:
+        print("ALREADY CHOSEN!")
+        continue
+ 
+    if letter in list(choice):
+        chosen.append(letter)
+        print("CORRECT!")
+        for i,x in enumerate(choice):
+            if x == letter:
+                current = current[:(i*2)] + letter + current[(i*2)+1:]
+                completed += 1
+    else:
+        chosen.append(letter)
+        triesleft -= 1
+        print("OH DEAR! THE LETTER ISN'T HERE!")
+```
+__That's a lot of code!__ Don't worry, lets look through it ourselves.
+
+```python3
+    print("\n\n")
+    print("YOU HAVE",triesleft,"GOES REMAINING")
+    print("CHOOSE A LETTER!\n\n\n")
+    t.sleep(1)
+    print(current)
+```
+Firstly, we print our current *"status"*, which includes our number of remaining goes, a prompt for us to pick a letter, and the variable *current*,
+which, if you may be able to recall, stores the outputted underscores and letters, showing us how many gaps we have left. We have quite a few ```\n``` statements
+in our code, which is an escape character for creating a new line. It is simply there to make the console output look as if its *refreshing*. There are other ways
+of clearing and reprinting the console, like in a real screen, but it is usually OS specific and furthermore, *console-specific*, making it unrealistic and quite 
+messy to include it everywhere.
+
+```python3
+    letter = input("-> ")
+    
+    while len(letter) > 1 or letter not in list(string.ascii_letters):
+        print("your string is not a letter or too long!")
+        letter = input("\n-> ")
+    letter = letter.upper()
+```
+This next section acts as validification to the inputted letter by the user. The first check involves whether it is a single character, hence the __>1__ statement.
+The next check looks at whether the letter is not in the list of characters in the alphabet. ```string.ascii_letters``` is a *constant array* containing all the
+__lowercase and uppercase__ letters in the english alphabet, hence representing our field of input (our *keyboard* per-se). Once we have our desired input, we convert the letter into uppercase, in-case the input provided was in lowercase, since earlier we converted our choice entirely into uppercase.
+
+```python3
+    if letter in chosen:
+        print("ALREADY CHOSEN!")
+        continue
+```
+if our chosen letter is already in the *chosen* list from earlier, then we can return to the user that the selected letter is already chosen. This acts as further __validification__. You may have seen me use this ```continue``` keyword quite often in my code; it is simply a *control-statement* that allows for the code to directly skip to its next cycle mid-loop, essentially skipping all the code below it. 
+
+```python3
+    if letter in list(choice):
+        chosen.append(letter)
+        print("CORRECT!")
+        for i,x in enumerate(choice):
+            if x == letter:
+                current = current[:(i*2)] + letter + current[(i*2)+1:]
+                completed += 1
+    else:
+        chosen.append(letter)
+        triesleft -= 1
+        print("OH DEAR! THE LETTER ISN'T HERE!")
+```
+Here is the main logic behind the hangman game. If our desired letter, being fully checked, is in the *choice string*, being temporarily converted into a list, we can
+then append it to the *chosen list* and notify the user that they have successfully picked the right letter. Here comes the tricky part: we need a way of showing to the user updated version of the variable *current* with all the parts where the correct letter applies. 
+if the word was __"APPLE"__, and the user's first guess was __"P"__, then we would want to change from ```_ _ _ _ _ ``` to ```_ P P _ _```
+
+- Firstly, we enumerate through the choice string. ```enumerate(iterable-type)``` is a very handy function when doing a __for loop__. It is a custom version of __range()__ which returns a tuple of both the index and the item itself. It is, essentially, a mix of ```for i in list``` and ```for i in range(len(list))```
+- In the loop, we check whether the letter at the current loop index is in-fact the correct letter. If so, we perform a splice where we insert *x* into the current string. ```current[:(i*2)]``` depicts the entire string up to the underscore where the letter should be, exclusive of the underscore, and ```current[(i*2)+1:]``` depicts the entire string from the end down to the underscore where the letter should be, exclusive of the underscore because of the +1. We then fit our letter between the two splices and make the result the new *current* variable.
+
+If our letter __iss not__ correct, not being in the choice string, then we append the letter to the *chosen list* and substract from the number of goes left. We notify the user that he has made an incorrect letter choice.
+
+
+```python3
+if triesleft == 0:
+    print("\n\n\n YOU LOSE!")
+else:
+    print("\n\n\n YOU WIN!")
+```
+__This is the very last part of the code!__
+We reach this part of the code *after the while loop is finished*, which, if we look back at the conditions for the loop, could be because of 2 reasons:
+- The user has successfully picked all the letters in the word
+- The user has run out of goes.
+Therefore, we check the value of *triesleft* and we can deduce that if it is a number above 0, then the user must have won by guessing the words correctly.
+__That's all!__
+
+
 
 ## Json Converter program 
 
+[This is the program I used to convert wordlist.txt into newlist.json](https://github.com/KEGSCodingClub/HangmanChallenge1/blob/RudrrayanManna/jsonconverter.py)
+```python3
+import json
+
+a = ""
+with open("wordlist.txt") as f:
+    with open("newlist.json","w") as t:
+        t.write("{")
+        for i,x in enumerate(f):
+            t.write("\""+str(i)+"\""+":"+"\""+str(x).strip()+"\""+",")
+        t.write("}")
+
+```
+The code here is quite obfuscated, in an attempt to make it shorter. We firstly open the *wordlist.txt* file, as variable f, and then create a new file, *newlist.json* as t, and mark it as "w", meaning that we can only write to this file. We firstly write a *"{"* to the file, being the opening bracket of the json file, and proceed to enumerate through the contents of *f*. The following write encompasses the *key-value pair* for each of the json elements:
+- we firstly write the key as a number, being *i* in f, we must include double-quotes since it is the type that JSON uses. __Remember to use a backslash!__
+- we then add a colon as a *key-value separator* and add the actual word as *x* in f, within doube-quotes. It is important to use ```.strip()``` since it removes any unwanted whitespace from ruining the formatting for the JSON.
+- Lastly, we add a *","* as a separater for each *key-value pair*. 
+
+We can then use an [online JSON beautifier](https://jsonformatter.curiousconcept.com) to make the json *look nice*. This is purely optional, and only for the sake of my sanity when trying to debug something. Also, if you are going to try out the code for yourself, be sure to go to the end of the json and remove the comma at the end!
+
+We end the program with a final *"}"* to close the JSON field.
+
+
 ## word length program
 
+This is a very small utility program for finding the smallest and largest word in the json file
 
+```python3
+import json
+
+with open("newlist.json","r") as f:
+    data = json.load(f)
+    a = 0
+    for i in data:
+        if len(data[i]) > a:
+            a = len(data[i])
+```
+As you can see, the code isn't __too bad__ for this program. Like before, we open a json file, this time marked as "r" for __read-only__. We then create a variable, *data*, which has the loaded json string from the file. We then loop through *data*, and update *a*, which is currently initialised as 0, and only update it if the the element in the loop is greater than what a currently is. By the end of it, *a* should be equal to *the __longest word__ in the json file*
+If we want to find the shortest word in the json file, we take the result of the largest word, and we initialise *a* as that. we then simply swap the signs and *a* should, at the end, be equal to the length of the *shortest word*.
+Here is the code for that:
+```python3
+import json
+
+with open("newlist.json","r") as f:
+    data = json.load(f)
+    a = 22
+    for i in data:
+        if len(data[i]) < a:
+            a = len(data[i])
+```
