@@ -260,7 +260,7 @@ with open("newlist.json","r") as f:
             a = len(data[i])
 ```
 As you can see, the code isn't __too bad__ for this program. Like before, we open a json file, this time marked as "r" for __read-only__. We then create a variable, *data*, which has the loaded json string from the file. We then loop through *data*, and update *a*, which is currently initialised as 0, and only update it if the the element in the loop is greater than what a currently is. By the end of it, *a* should be equal to *the __longest word__ in the json file*
-If we want to find the shortest word in the json file, we take the result of the largest word, and we initialise *a* as that. we then simply swap the signs and *a* should, at the end, be equal to the length of the *shortest word*.
+If we want to find the shortest word in the json file, we take the result of the largest word, and we initialise *a* as that. we then simply swap the signs and *a* should, at the end, be equal to the length of the *shortest word*. Both programs run at __O(N)__.
 Here is the code for that:
 ```python3
 import json
