@@ -9,6 +9,8 @@ I have 2 utility files:
 - I attempted to load the file by simple reading the text line by line, which is how python supports it, but found it to be extremely slow.
 - The reason for this was because the lookup time for anything in wordlist.txt is O(N), which is incredibly slow for 58,109 words.
 - It will be even worse later down the line when finding words of certain lengths randomly
+- <span style="color:blue">Furthermore, I have heard that some people are using some *shuffling techniques* to find a word of specific length to avoid having to label each word, which would be slow. However, even then, the best shuffling algorithm out there __The Fisher Yates__ Random permutation algorithm, only operates in O(N) 
+assuming that the lookup time is O(1), making the total complexity O(N^2) when not using a hash table or JSON, which is undeniably slow.</span>
 > Therefore, I decided to use the JSON format since it is completely serialized and acts as a hashmap, with a constant lookup time of O(1) (most of the time)
 > which allowed for choosing a random length word to be reduced to a worst case of N, much better than having to sort or label each of the words
 > A disadvantage of this is that, it is possible for the program to go on forever, although with an extremely, infinetessimaly small probability, since finding a random
