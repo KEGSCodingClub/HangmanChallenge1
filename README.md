@@ -58,6 +58,43 @@ checking whether the user has given the worded version of a number such as __one
 please check my explanation on [the longest shortest word program](https://github.com/KEGSCodingClub/HangmanChallenge1/blob/RudrrayanManna/README.md#word-length-program).
  
 
+```python3
+choice = ""
+
+while choice == "":
+    rand = r.randint(0,58108)
+    if len(data[json.dumps(rand)]) == length:
+        choice = data[json.dumps(rand)]
+        break
+
+choice = choice.upper()
+```
+This last segment of code prior to the actual game involves the *choice selection*. The variable *choice* is first initialised and a __while loop__ goes 
+through to find randomly selected word of our length. The process involves picking a random number between 0 and 58,108 and storing it in *rand*. We will
+then check if the __key__ at this randomly generated number has a value of our desired length. If this is not the case then we continue. Once we find our
+random word we can *break out of the loop*. An "average-worst" case scenario for this code would be around Θ(N) since the lookup time is O(1) and we will 
+be going through random words. However, since we are not recording our *previously visited* words in a list for the sake of auxilary space, we could quite
+possibly end up with a "terrible" case scenario of __O(N!)__, which could happen if there was only one word of the desired length. Although I have not included
+the visited word list in my own code, ~~since I was slightly lazy~~, we can see how this can be implemented right now:
+
+```python3
+choice = ""
+choicelist = [d for d in range(58109)]
+
+while choice == "":
+    rand = r.choice(choicelist)
+    if len(data[json.dumps(rand)]) == length:
+        choice = data[json.dumps(rand)]
+        break
+    choicelist.pop(rand)
+
+choice = choice.upper()
+```
+__Now this solution removes the N! and infinity scenario. Hooray!__
+Assuming that the choice() function has a time complexity of O(1) (which is possible), we can say that this new algorithm has a worst case scenario of __O(N)__
+where *N* is the original size of the array, and a best case scenario of __O(1)__!
+
+
 ## Json Converter program 
 
 ## word length program
