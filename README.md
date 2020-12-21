@@ -94,6 +94,25 @@ __Now this solution removes the N! and infinity scenario. Hooray!__
 Assuming that the choice() function has a time complexity of O(1) (which is possible), we can say that this new algorithm has a worst case scenario of __O(N)__
 where *N* is the original size of the array, and a best case scenario of __O(1)__!
 
+The last line ```choice.upper()``` simply makes our choice fully uppercase to make letter choosing much easier. *now lets move onto the game itself:*
+
+
+## The Hangman Process
+
+We will now be moving onto the main game loop for the hangman challenge, lets start with some *initialisation*.
+```python3
+chosen = []
+completed = 0
+current = "_ " * length
+triesleft = 5
+```
+Here, __chosen__ will be a store of all the letters we have chosen during the game, it will be initially empty.
+The __completed__ variable is an integer which will store the amount of letters in the word we have guessed. Note that this is based on the total amount of letters
+in the word and not our successfully chosen words, meaning that if the same letter occurs multiple times in the word, and we have chosen it, completed will go up by
+x number of times. *The gameloop will break when it reaches the length of the word.*
+The __Current__ variable is important for console output in the game. It is initially going to be some underscores for the total length of the word, but over time, 
+we will see some of the underscores to be replaced by letters.
+Lastly, the __triesleft__ variable simply stores our remaining goes, it is currently set to 5 and *the gameloop will break if it reaches 0*
 
 ## Json Converter program 
 
